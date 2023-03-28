@@ -1,6 +1,6 @@
 var stage = new Konva.Stage({
     container: 'container',
-    width: 800,
+    width: 1100,
     height: 800,
   });
 
@@ -335,6 +335,7 @@ for(i=1;i<=3;i++){
 
   text3.on('click', () => {
     console.log("megy");
+    addexample();
 });
 
 
@@ -400,3 +401,62 @@ layer.add(text5);
       
       layer.add(textback);
     }
+
+    
+    function addexample(){
+
+      layer.destroyChildren();
+      let lineX=0;
+      let anotherL=0;
+      load1();
+      for(k=1;k<=3;k++){
+      for(j=1;j<=2;j++){
+      for(i=1;i<=3;i++){
+        var bracketline=new Konva.Line({
+            points:[50+lineX+anotherL,50*i,50+lineX+anotherL,100*i],
+            stroke: 'black',
+            strokeWidth:4,
+            
+            lineJoin:'round',
+        }); 
+
+        layer.add(bracketline);
+        }
+        lineX+=210;
+      }
+        lineX-=210;
+        anotherL+=100;
+    }
+    
+        let corX=0;
+        let anotherX=0;
+        for(k=1;k<=2;k++){
+        for(j=1;j<=3;j++){
+          
+        for(i=1;i<=3;i++){
+            var text = new Konva.Text({
+                x: 70+corX+anotherX,
+                y: 50*i*1.5,
+                text: String(Math.floor(Math.random() * (10 - 1) + 1)),
+                fontSize: 70,
+                fontFamily: 'Calibri',
+                fill: 'black'
+              });
+           
+            layer.add(text);
+        }
+        corX+=70;
+      }
+      anotherX+=100;
+    }
+
+    }
+
+
+    stage.on('click', function (e) {
+      // e.target is a clicked Konva.Shape or current stage if you clicked on empty space
+      console.log('clicked on', e.target);
+      console.log(
+        'usual click on ' + JSON.stringify(stage.getPointerPosition())
+      );
+    });
