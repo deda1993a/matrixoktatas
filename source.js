@@ -1,3 +1,13 @@
+let mode=0;
+let arr1 = [[],[]];
+let arr2 = [[],[]];
+let arrnew=[[],[]];
+let all=[arr1, arr2];
+let row=0;
+let col=0;
+
+
+
 var stage = new Konva.Stage({
     container: 'container',
     width: 1100,
@@ -335,7 +345,9 @@ for(i=1;i<=3;i++){
 
   text3.on('click', () => {
     console.log("megy");
-    addexample();
+    operation='+';
+    addexample('+');
+    
 });
 
 
@@ -354,6 +366,9 @@ var text4 = new Konva.Text({
 
 text4.on('click', () => {
   console.log("megy");
+    operation='*';
+   addexample('*');
+   
 });
 
 
@@ -403,8 +418,8 @@ layer.add(text5);
     }
 
     
-    function addexample(){
-
+    function addexample(str){
+      mode=1;
       layer.destroyChildren();
       let lineX=0;
       let anotherL=0;
@@ -432,17 +447,19 @@ layer.add(text5);
         let anotherX=0;
         for(k=1;k<=2;k++){
         for(j=1;j<=3;j++){
-          
+          all[k-1].push( [] );
         for(i=1;i<=3;i++){
+          all[k-1][i-1].push( Math.floor(Math.random() * (10 - 1) + 1) );
             var text = new Konva.Text({
                 x: 70+corX+anotherX,
                 y: 50*i*1.5,
-                text: String(Math.floor(Math.random() * (10 - 1) + 1)),
+                text: String(all[k-1][i-1][j-1]),
+                name: `${k-1}${i-1}${j-1}`,
                 fontSize: 70,
                 fontFamily: 'Calibri',
                 fill: 'black'
               });
-           
+          
             layer.add(text);
         }
         corX+=70;
@@ -450,13 +467,291 @@ layer.add(text5);
       anotherX+=100;
     }
 
+
+    
+
+
+    console.log(all[0][0][0]);
+     //arrnew= Array.from(Array(3), () => new Array(3));
+     if(str=='+'){
+      	for(i=0;i<3;i++){
+          arrnew.push( [] );
+          for(j=0;j<3;j++){
+            arrnew[i][j]=all[0][i][j]+all[1][i][j];
+          }
+        }
+      }else if(str=='*')
+      {
+      	for(i=0;i<3;i++){
+       
+          arrnew.push( [] );
+          for(j=0;j<3;j++){
+            arrnew[i][j]=0;
+            for(z=0;z<3;z++){
+          
+            arrnew[i][j]+= all[0][i][z]*all[1][z][j];
+            console.log("arrnew: "+arrnew);
+            }
+          }
+        }
+        console.log("arrnew:");
+        //console.log(all[0]);
+
+        //arrnew=math.multiply(arr1, arr2);
+        
+        
+      }
+
+        console.log(arrnew);
+        
     }
 
-
+ 
+    let operation;
     stage.on('click', function (e) {
       // e.target is a clicked Konva.Shape or current stage if you clicked on empty space
+
+
+      if (mode==1){
+        nextNum(operation);
+      }
       console.log('clicked on', e.target);
       console.log(
         'usual click on ' + JSON.stringify(stage.getPointerPosition())
       );
     });
+
+
+    var textbackA;
+    var textbackB;
+    var textbackE;
+    var textbackN;
+    let lastR;
+    let lastC;
+    let mulposX;
+
+   let newX=0;
+   var textNW; 
+
+    function nextNum(str2)
+    {
+     
+         // console.log(arr1);
+       
+         //all[0][row][col]
+
+        console.log(arr1);
+
+        let sel;
+        if(str2=='+'){
+        sel=layer.findOne(`.0${row}${col}`);
+        
+        sel.fill('red');
+        sel=layer.findOne(`.1${row}${col}`);
+        sel.fill('red');
+        if(lastR!=null){
+        sel=layer.findOne(`.0${lastR}${lastC}`);
+        
+        sel.fill('black');
+
+        sel=layer.findOne(`.1${lastR}${lastC}`);
+        sel.fill('black');
+        
+        sel=layer.findOne(`.2${lastR}${lastC}`);
+        sel.fill('black');
+
+        }
+      }else if(str2=='*'){
+        for(i=0;i<3;i++){
+        sel=layer.findOne(`.0${row}${i}`);
+        sel.fill('red');
+
+        sel=layer.findOne(`.1${i}${col}`);
+        sel.fill('red');
+        
+        }
+      
+        if(lastR!=null){
+          for(i=0;i<3;i++){
+      
+
+        sel=layer.findOne(`.1${i}${lastC}`);
+        sel.fill('black');
+          }
+
+          if(col==0){
+            for(i=0;i<3;i++){
+            sel=layer.findOne(`.0${lastR}${i}`);
+        
+            sel.fill('black');
+            }
+          }
+     
+       }
+     }
+
+
+        lastC=col;
+        lastR=row;
+        if(str2=='+'){
+      if(typeof textbackA != "undefined"){
+      textbackA.destroy();
+      textbackB.destroy();
+      textbackE.destroy();
+      textbackN.destroy();
+      }
+      textbackA = new Konva.Text({
+        x: 45,
+        y: 350,
+        text: all[0][row][col],
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      var textbackS = new Konva.Text({
+        x: 60,
+        y: 350,
+        text: '+',
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      textbackB = new Konva.Text({
+        x: 75,
+        y: 350,
+        text: all[1][row][col],
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      textbackE = new Konva.Text({
+        x: 90,
+        y: 350,
+        text: '=',
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      textbackN = new Konva.Text({
+        x: 115,
+        y: 350,
+        text: arrnew[row][col],
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+      
+      if(col==0)
+      {
+        newX=0;
+      }
+
+      newX+=70;
+       textNW = new Konva.Text({
+        x: 615+newX,
+        y: (50*(row+1))*1.5,
+        text: String(arrnew[row][col]),
+        name: `2${row}${col}`,
+        fontSize: 70,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+  
+    layer.add(textNW);
+
+    
+      
+
+      layer.add(textbackA);
+      layer.add(textbackS);
+      layer.add(textbackB);
+      layer.add(textbackE);
+      layer.add(textbackN);
+      }
+      if(col==arr1[row].length-1){
+        row++;
+        col=0;
+      }else{
+        col++;
+      }
+    
+
+    if(str2=='*'){
+      mulposX=0;
+      for(i=0;i<3;i++){
+      textbackA = new Konva.Text({
+        x: 45+mulposX,
+        y: 350,
+        text: all[0][row][i],
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      var textbackM = new Konva.Text({
+        x: 60+mulposX,
+        y: 350,
+        text: '*',
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      textbackB = new Konva.Text({
+        x: 75+mulposX,
+        y: 350,
+        text: all[1][i][col-1],
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      if(i<arr1[row].length-1){
+      
+      var textbackS = new Konva.Text({
+        x: 90+mulposX,
+        y: 350,
+        text: '+',
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+    }else{
+      var textbackS = new Konva.Text({
+        x: 90+mulposX,
+        y: 350,
+        text: '=',
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+
+      var textbackNnn = new Konva.Text({
+        x: 105+mulposX,
+        y: 350,
+        text: String(arrnew[row][col-1]),
+        name: `2${row}${col}`,
+        fontSize: 30,
+        fontFamily: 'Calibri',
+        fill: 'red'
+      });
+      layer.add(textbackNnn);
+    }
+
+      layer.add(textbackA);
+      layer.add(textbackB);
+      layer.add(textbackM);
+      layer.add(textbackS);
+      
+      mulposX+=60;
+    }
+    }
+
+
+   
+      console.log(arrnew);
+    }
